@@ -8,7 +8,7 @@
 ### Running the Container
 ```bash
 # 1. Clone this repository
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/afierror/deeplearningAI.git
 cd your-repo
 
 # 2. Build the Docker image
