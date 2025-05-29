@@ -20,6 +20,7 @@ docker run -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
 
 # 4. Access Jupyter Lab at:
 You will see output containing URL with an access token like
+```powershell
 http://127.0.0.1:8888/lab?token=abcdef123456...
 ```
 * Copy the URL from the terminal output (starts with ```http://localhost:8888```)
