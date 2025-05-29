@@ -14,11 +14,11 @@ cd deeplearningAI
 # 2. Build the Docker image
 docker build -t ml-assignment .
 
-```
-
 # 3. Run the container
 For Linux:
 docker run -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
+
+```
 
 # 4. Access Jupyter Lab at:
 You will see output containing URL with an access token like:
