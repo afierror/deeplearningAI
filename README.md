@@ -9,7 +9,7 @@
 ```bash
 # 1. Clone this repository
 git clone https://github.com/afierror/deeplearningAI.git
-cd your-repo
+cd deeplearningAI
 
 # 2. Build the Docker image
 docker build -t ml-assignment .
