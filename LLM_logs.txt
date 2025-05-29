@@ -1,0 +1,2733 @@
+My assignment is the followin: This task is designed to give you a chance to demonstrate your skills in creating lab exercises and unit tests. Think about this assignment as something that will be a part of a course on Machine Learning, as a way to test a learner’s understanding of this material. Therefore you need to provide the code that the learner will see, the unit test to assess the learner’s submission and the solution (that the learner will not see). As a teaching exercise, you will need to make a choice on how much scaff olding to provide to the students. We suggest that you give them at least some partially-written code blocks to complete, in the Jupyter notebook, as opposed to only giving them high level instructions.
+Machine Learning Lab: Implementing a Simple Linear Regression Model
+Lab Exercise Description
+
+This lab will test your understanding of implementing a basic linear regression model from scratch in Python. You'll complete several key functions needed for training a linear regression model and making predictions.
+Learning Objectives:
+
+    Implement the hypothesis function for linear regression
+
+    Implement the cost function (mean squared error)
+
+    Implement gradient descent for parameter optimization
+
+    Use the trained model to make predictions
+
+Partially Completed Code
+python
+
+import numpy as np
+
+class LinearRegression:
+    def __init__(self, learning_rate=0.01, n_iterations=1000):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
+    
+    def fit(self, X, y):
+        """Train the linear regression model
+        
+        Args:
+            X: Feature matrix of shape (n_samples, n_features)
+            y: Target values of shape (n_samples,)
+        """
+        n_samples, n_features = X.shape
+        
+        # Initialize parameters
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+        
+        # Gradient descent
+        for _ in range(self.n_iterations):
+            # TODO: Complete the gradient descent implementation
+            # 1. Compute predictions
+            y_pred = None  # TO COMPLETE
+            
+            # 2. Compute gradients
+            dw = None  # TO COMPLETE
+            db = None  # TO COMPLETE
+            
+            # 3. Update parameters
+            self.weights = None  # TO
+
+The topic for this exercise is “Building your fi rst neural network in python”. You will need to create one coding exercise targeted at intermediate learners, which you will choose from the following list of ideas:
+● Implementing forward propagation through a simple neural network
+● Implementing the ReLU activation function
+● Initializing a 3 layer neural network
+● Implement a softmax layer
+● Implement a training loop for a simple binary classifi er network
+Building Your First Neural Network: Implementing Forward Propagation
+Lab Exercise Description
+
+This lab will guide you through implementing forward propagation in a simple 3-layer neural network. You'll complete key functions needed for passing input data through the network to make predictions.
+Learning Objectives:
+
+    Understand the structure of a basic
+
+I will choose "Implement a softmax layer"
+Implementing a Softmax Layer for Neural Networks
+Lab Exercise Description
+
+This lab will guide you through implementing a softmax layer, a crucial component in neural networks for multi-class classification problems. You'll implement both the forward and backward passes of the softmax operation.
+Learning Objectives:
+
+    Understand the mathematical formulation of the softmax function
+
+    Implement the forward pass for probability distribution calculation
+
+    Implement the backward pass for gradient computation
+
+    Handle numerical stability issues in implementation
+
+Partially Completed Code
+python
+
+import numpy as np
+
+class SoftmaxLayer:
+    def __init__(self):
+        self.cache = None  # For storing intermediate values during forward pass
+    
+    def forward(self, Z):
+        """Compute the softmax of input Z
+        
+        Args:
+            Z: Input array of shape (batch_size, num_classes)
+            
+        Returns:
+            A: Output array after softmax transformation, same shape as Z
+        """
+        # TODO: Implement the forward pass of softmax
+        # Remember to handle numerical stability by subtracting the max
+        # 1. Shift values for numerical stability
+        Z_shifted = None  # TO COMPLETE
+        
+        # 2. Compute exponentials
+        exp_Z = None  # TO COMPLETE
+        
+        # 3. Compute softmax probabilities
+        A = None  # TO COMPLETE
+        
+        # Store values needed for backward pass
+        self.cache = A
+        
+        return A
+    
+    def backward(self, dA):
+        """Compute the gradient of the loss with respect to Z
+        
+        Args:
+            dA: Gradient of loss with respect to A, shape (batch_size, num_classes)
+            
+        Returns:
+            dZ: Gradient of loss with respect to Z, shape (batch_size, num_classes)
+        """
+        A = self.cache
+        
+        # TODO: Implement the backward pass of softmax
+        # Hint: You'll need to compute the Jacobian matrix for each sample
+        batch_size, num_classes = A.shape
+        
+        dZ = np.zeros_like(A)
+        
+        for i in range(batch_size):
+            # 1. Reshape A[i] to column vector
+            a = None  # TO COMPLETE
+            
+            # 2. Compute Jacobian matrix J = diag(a) - a*a.T
+            J = None  # TO COMPLETE
+            
+            # 3. Compute dZ for this sample
+            dZ[i] = None  # TO COMPLETE
+        
+        return dZ
+
+Unit Tests (Hidden from Learners)
+python
+
+import unittest
+import numpy as np
+
+class TestSoftmaxLayer(unittest.TestCase):
+    def setUp(self):
+        self.softmax = SoftmaxLayer()
+        self.tol = 1e-6
+    
+    def test_forward_pass(self):
+        Z = np.array([[1, 2, 3],
+                      [0, 0, 0],
+                      [-1, 0, 1]])
+        
+        A = self.softmax.forward(Z)
+        
+        # Test shape
+        self.assertEqual(A.shape, Z.shape)
+        
+        # Test rows sum to 1
+        row_sums = np.sum(A, axis=1)
+        np.testing.assert_allclose(row_sums, np.ones(Z.shape[0]), atol=self.tol)
+        
+        # Test known values
+        expected = np.array([[0.09003057, 0.24472847, 0.66524096],
+                            [0.33333333, 0.33333333, 0.33333333],
+                            [0.09003057, 0.24472847, 0.66524096]])
+        np.testing.assert_allclose(A, expected, atol=self.tol)
+    
+    def test_backward_pass(self):
+        Z = np.array([[1, 2, 3]])
+        A = self.softmax.forward(Z)
+        dA = np.array([[0.1, -0.2, 0.1]])
+        
+        dZ = self.softmax.backward(dA)
+        
+        # Test shape
+        self.assertEqual(dZ.shape, Z.shape)
+        
+        # Test known gradient
+        expected_dZ = np.array([[ 0.01917246, -0.05751739,  0.03834493]])
+        np.testing.assert_allclose(dZ, expected_dZ, atol=self.tol)
+        
+        # Test gradient with all ones
+        dA_ones = np.ones_like(Z)
+        dZ_ones = self.softmax.backward(dA_ones)
+        np.testing.assert_allclose(dZ_ones, np.zeros_like(Z), atol=self.tol)
+
+if __name__ == '__main__':
+    unittest.main()
+
+Solution (Hidden from Learners)
+python
+
+class SoftmaxLayer:
+    def __init__(self):
+        self.cache = None
+    
+    def forward(self, Z):
+        # Shift values by max for numerical stability
+        Z_shifted = Z - np.max(Z, axis=1, keepdims=True)
+        
+        # Compute exponentials
+        exp_Z = np.exp(Z_shifted)
+        
+        # Compute softmax probabilities
+        A = exp_Z / np.sum(exp_Z, axis=1, keepdims=True)
+        
+        # Store values needed for backward pass
+        self.cache = A
+        
+        return A
+    
+    def backward(self, dA):
+        A = self.cache
+        batch_size, num_classes = A.shape
+        
+        dZ = np.zeros_like(A)
+        
+        for i in range(batch_size):
+            # Reshape A[i] to column vector
+            a = A[i].reshape(-1, 1)
+            
+            # Compute Jacobian matrix J = diag(a) - a*a.T
+            J = np.diagflat(a) - np.dot(a, a.T)
+            
+            # Compute dZ for this sample
+            dZ[i] = np.dot(J, dA[i])
+        
+        return dZ
+
+Teaching Notes:
+
+    The exercise focuses on the core mathematical implementation of softmax
+
+    Numerical stability is addressed by subtracting the max value
+
+    The backward pass requires understanding of Jacobian matrices
+
+    Learners must complete key mathematical operations while the structure is provided
+
+    The solution shows efficient numpy operations for the forward pass
+
+    The backward pass is implemented with explicit loops for clarity (though vectorized versions exist)
+
+generate a text that says that the unit test code is to assess the code the learner has coded
+
+Assessment Note:
+
+The unit test code provided is designed to automatically evaluate the correctness of your softmax layer implementation. When you run these tests against your completed code, they will verify:
+
+    Forward Pass Validation:
+
+        Checks that your softmax output has the correct shape
+
+        Verifies each row sums to 1 (as required for probability distributions)
+
+        Tests against known output values for given inputs
+
+    Backward Pass Validation:
+
+        Confirms the gradient calculations maintain proper dimensions
+
+        Tests gradient computation against pre-calculated expected values
+
+        Includes edge case testing (like all-ones gradient input)
+
+These tests follow machine learning convention where:
+
+    The forward pass must produce valid probability distributions
+
+    The backward pass must compute mathematically correct gradients
+
+    Numerical stability is implicitly tested through value comparisons
+
+To use these tests:
+
+    Complete your implementation in the SoftmaxLayer class
+
+    Run the test cell
+
+    All tests should pass if your implementation is correct
+
+    If any tests fail, examine the error messages to identify which aspect of your implementation needs correction
+
+The tests are comprehensive enough to catch common mistakes in:
+
+    Numerical stability handling
+
+    Matrix dimensions in gradient calculations
+
+    Proper probability distribution properties
+
+include emojis
+Assessment Note 📝
+
+The unit test code provided is designed to automatically evaluate the correctness of your softmax layer implementation ✅. When you run these tests against your completed code, they will verify:
+1️⃣ Forward Pass Validation 🔄
+
+✔ Checks that your softmax output has the correct shape 📏
+✔ Verifies each row sums to 1 (required for probability distributions) ➕
+✔ Tests against known output values for given inputs 🎯
+2️⃣ Backward Pass Validation 🔙
+
+✔ Confirms the gradient calculations maintain proper dimensions 📐
+✔ Tests gradient computation against pre-calculated expected values 🧮
+✔ Includes edge case testing (e.g., all-ones gradient input) ⚠
+Why These Tests Matter 🤔
+
+These tests follow machine learning best practices, ensuring:
+🔹 The forward pass produces valid probability distributions
+🔹 The backward pass computes mathematically correct gradients
+🔹 Numerical stability is implicitly checked
+How to Use the Tests 🛠
+
+1️⃣ Complete your implementation in the SoftmaxLayer class ✍
+2️⃣ Run the test cell ▶
+3️⃣ All tests should pass ✅ (if correct)
+4️⃣ If any fail, check the error messages to debug 🐞
+Common Mistakes Caught ❌
+
+🔸 Numerical instability (e.g., overflow/underflow)
+🔸 Incorrect matrix dimensions in gradient calculations
+🔸 Improper probability distribution properties
+
+Happy coding! 🚀 Let’s make sure your softmax layer works perfectly! 🎉
+give me the markdown formar
+
+Here's the markdown format for your assessment note with emojis:
+markdown
+
+# Assessment Note 📝
+
+The **unit test code** provided is designed to automatically evaluate your implementation of the softmax layer. When you run these tests against your completed code, they will verify:
+
+## 1️⃣ Forward Pass Validation 🔄
+- ✔ Checks that your softmax output has the **correct shape** 📏
+- ✔ Verifies each row **sums to 1** (required for probability distributions) ➕
+- ✔ Tests against **known output values** for given inputs 🎯
+
+## 2️⃣ Backward Pass Validation 🔙
+- ✔ Confirms gradient calculations maintain **proper dimensions** 📐
+- ✔ Tests gradient computation against **expected values** 🧮
+- ✔ Includes **edge case testing** (all-ones gradient input) ⚠
+
+## Why These Tests Matter 🤔
+These tests follow **machine learning best practices**, ensuring:
+- 🔹 Forward pass produces valid probability distributions
+- 🔹 Backward pass computes correct gradients
+- 🔹 Numerical stability is maintained
+
+## How to Use the Tests 🛠
+1. Complete your `SoftmaxLayer` implementation ✍
+2. Run the test cell ▶
+3. All tests should pass if correct ✅
+4. If any fail, check error messages to debug 🐞
+
+## Common Mistakes Caught ❌
+- 🔸 Numerical instability (overflow/underflow)
+- 🔸 Incorrect matrix dimensions
+- 🔸 Improper probability distributions
+
+**Happy coding!** 🚀 Let's make sure your softmax layer works perfectly! 🎉
+
+This markdown includes:
+
+    Clear section headers with emojis
+
+    Bullet points for easy reading
+
+    Consistent emoji usage for visual cues
+
+    Bold text for emphasis
+
+    Proper spacing for readability
+
+    Encouraging closing message
+
+You can copy this directly into your Jupyter notebook or any markdown-supported platform.
+please in the code for implementing softmax layer for neural networks, only consider the forward pass
+
+Here's the simplified implementation focusing only on the forward pass of the softmax layer:
+python
+
+import numpy as np
+
+class SoftmaxLayer:
+    def __init__(self):
+        pass  # No need for cache if only implementing forward pass
+    
+    def forward(self, Z):
+        """Compute the softmax of input Z (forward pass only)
+        
+        Args:
+            Z: Input array of shape (batch_size, num_classes)
+            
+        Returns:
+            A: Probability distribution after softmax, same shape as Z
+        """
+        # Shift values by max for numerical stability
+        Z_shifted = Z - np.max(Z, axis=1, keepdims=True)
+        
+        # Compute exponentials
+        exp_Z = np.exp(Z_shifted)
+        
+        # Compute softmax probabilities
+        A = exp_Z / np.sum(exp_Z, axis=1, keepdims=True)
+        
+        return A
+
+Corresponding Unit Tests (Forward Pass Only):
+python
+
+import unittest
+import numpy as np
+
+class TestSoftmaxForward(unittest.TestCase):
+    def setUp(self):
+        self.softmax = SoftmaxLayer()
+        self.tol = 1e-6
+    
+    def test_forward_shape(self):
+        Z = np.array([[1, 2, 3],
+                     [0, 0, 0]])
+        A = self.softmax.forward(Z)
+        self.assertEqual(A.shape, Z.shape)
+    
+    def test_forward_probabilities(self):
+        Z = np.array([[1, 2, 3]])
+        A = self.softmax.forward(Z)
+        # Test rows sum to 1
+        np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+        # Test known values
+        expected = np.array([[0.09003057, 0.24472847, 0.66524096]])
+        np.testing.assert_allclose(A, expected, atol=self.tol)
+    
+    def test_forward_stability(self):
+        Z = np.array([[1000, 1001, 1002]])  # Large numbers test
+        A = self.softmax.forward(Z)
+        np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+
+if __name__ == '__main__':
+    unittest.main()
+
+Key Features:
+
+    Simplified Implementation:
+
+        Only contains the forward pass
+
+        Removed backward pass and cache storage
+
+        Kept numerical stability handling
+
+    Focused Unit Tests:
+
+        Shape validation
+
+        Probability distribution properties
+
+        Numerical stability check
+
+        Known-value verification
+
+    Clean Interface:
+
+        Single method (forward)
+
+        Clear docstring
+
+        Proper NumPy broadcasting
+
+This version maintains all the essential functionality of the softmax forward pass while being more approachable for learners who are just starting with activation functions in neural networks.
+generate text with instructions to let learners know there is a starter code and he/she needs to code only in the spaces that says #your code goes here
+
+Here's a clear instruction text with emojis to guide learners:
+🧑💻 Coding Exercise: Implement Softmax Forward Pass
+📝 Instructions
+
+    Starter Code Provided: You'll find a partially completed SoftmaxLayer class below.
+
+    Where to Code:
+
+        Only modify sections marked with:
+        python
+
+        # YOUR CODE GOES HERE
+
+        Do not change any other parts of the code.
+
+    Implementation Requirements:
+
+        Complete the forward pass calculation
+
+        Handle numerical stability properly (subtract max before exp)
+
+        Return valid probability distributions (each row sums to 1)
+
+🛠 Starter Code
+python
+
+import numpy as np
+
+class SoftmaxLayer:
+    def forward(self, Z):
+        """Compute softmax probabilities for input Z
+        
+        Args:
+            Z: Input array of shape (batch_size, num_classes)
+            
+        Returns:
+            A: Probability distribution array (same shape as Z)
+        """
+        # 1. Shift values for numerical stability (prevent overflow)
+        # YOUR CODE GOES HERE
+        Z_shifted = None  
+        
+        # 2. Compute exponentials of shifted values
+        # YOUR CODE GOES HERE
+        exp_Z = None  
+        
+        # 3. Normalize to get probabilities (each row sums to 1)
+        # YOUR CODE GOES HERE
+        A = None  
+        
+        return A
+
+✅ What Success Looks Like
+
+Your implementation should pass these checks:
+python
+
+sm = SoftmaxLayer()
+Z = np.array([[1, 2, 3]])
+A = sm.forward(Z)
+
+print("Output shape:", A.shape)  # Should match input (1, 3)
+print("Row sums:", np.sum(A, axis=1))  # Should be [1.0]
+print("Probabilities:", A)  # Should be ~[0.09, 0.24, 0.66]
+
+💡 Tips
+
+🔹 Use np.max with axis=1, keepdims=True for stability
+🔹 np.exp calculates exponentials
+🔹 Normalize using np.sum with the same axis/keepdims
+
+⚠ Note: The unit tests will verify your implementation - make sure all test cases pass!
+
+🚀 Ready? Go implement the softmax forward pass!
+
+This version:
+
+    Clearly marks coding zones with # YOUR CODE GOES HERE
+
+    Uses emojis for visual guidance
+
+    Provides success criteria upfront
+
+    Includes implementation hints without giving away the solution
+
+    Maintains a positive, encouraging tone
+
+give me the markdown format
+
+Here's the markdown format for your softmax implementation instructions:
+markdown
+
+# 🧑💻 Coding Exercise: Implement Softmax Forward Pass
+
+## 📝 Instructions
+
+1. **Starter Code Provided**: You'll find a partially completed `SoftmaxLayer` class below.
+2. **Where to Code**:
+   - Only modify sections marked with:
+     ```python
+     # YOUR CODE GOES HERE
+     ```
+   - Do not change any other parts of the code.
+3. **Implementation Requirements**:
+   - Complete the forward pass calculation
+   - Handle numerical stability properly (subtract max before exp)
+   - Return valid probability distributions (each row sums to 1)
+
+## 🛠 Starter Code
+
+```python
+import numpy as np
+
+class SoftmaxLayer:
+    def forward(self, Z):
+        """Compute softmax probabilities for input Z
+        
+        Args:
+            Z: Input array of shape (batch_size, num_classes)
+            
+        Returns:
+            A: Probability distribution array (same shape as Z)
+        """
+        # 1. Shift values for numerical stability (prevent overflow)
+        # YOUR CODE GOES HERE
+        Z_shifted = None  
+        
+        # 2. Compute exponentials of shifted values
+        # YOUR CODE GOES HERE
+        exp_Z = None  
+        
+        # 3. Normalize to get probabilities (each row sums to 1)
+        # YOUR CODE GOES HERE
+        A = None  
+        
+        return A
+
+✅ What Success Looks Like
+
+Your implementation should pass these checks:
+python
+
+sm = SoftmaxLayer()
+Z = np.array([[1, 2, 3]])
+A = sm.forward(Z)
+
+print("Output shape:", A.shape)  # Should match input (1, 3)
+print("Row sums:", np.sum(A, axis=1))  # Should be [1.0]
+print("Probabilities:", A)  # Should be ~[0.09, 0.24, 0.66]
+
+💡 Tips
+
+    Use np.max with axis=1, keepdims=True for stability
+
+    np.exp calculates exponentials
+
+    Normalize using np.sum with the same axis/keepdims
+
+⚠ Note: The unit tests will verify your implementation - make sure all test cases pass!
+
+🚀 Ready? Go implement the softmax forward pass!
+
+
+Key features of this markdown:
+- Clear section headers with emojis
+- Distinct code blocks marked with triple backticks
+- Bullet points for easy reading
+- Visual separation between sections
+- Emphasis on action items
+- Positive, encouraging tone
+
+The formatting will render properly in:
+- Jupyter notebooks
+- GitHub/GitLab markdown
+- Most technical documentation systems
+- Markdown-supported learning platforms
+
+Explicame este codigo, no entiendo que es la variable tol: import unittest
+import numpy as np
+
+class TestSoftmaxForward(unittest.TestCase):
+    def setUp(self):
+        self.softmax = SoftmaxLayer()
+        self.tol = 1e-6
+    
+    def test_forward_shape(self):
+        Z = np.array([[1, 2, 3],
+                     [0, 0, 0]])
+        A = self.softmax.forward(Z)
+        self.assertEqual(A.shape, Z.shape)
+    
+    def test_forward_probabilities(self):
+        Z = np.array([[1, 2, 3]])
+        A = self.softmax.forward(Z)
+        # Test rows sum to 1
+        np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+        # Test known values
+        expected = np.array([[0.09003057, 0.24472847, 0.66524096]])
+        np.testing.assert_allclose(A, expected, atol=self.tol)
+    
+    def test_forward_stability(self):
+        Z = np.array([[1000, 1001, 1002]])  # Large numbers test
+        A = self.softmax.forward(Z)
+        np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+
+if __name__ == '__main__':
+    unittest.main()
+Explicación del código de pruebas unitarias para Softmax
+
+Voy a explicarte cada parte del código, especialmente el uso de la variable tol que mencionas:
+La variable tol (tolerancia)
+python
+
+self.tol = 1e-6
+
+    Significado: tol es una abreviación de "tolerancia" (tolerance en inglés)
+
+    Valor: 1e-6 significa 0.000001 (un millonésimo)
+
+    Propósito: Establece el margen de error permitido en las comparaciones numéricas
+
+    Por qué es necesaria: En cálculos con números flotantes, casi nunca se obtienen valores exactos debido a limitaciones de precisión numérica
+
+Estructura completa del código de pruebas
+1. Configuración inicial (setUp)
+python
+
+def setUp(self):
+    self.softmax = SoftmaxLayer()
+    self.tol = 1e-6
+
+    Se ejecuta antes de cada prueba
+
+    Crea una instancia nueva de SoftmaxLayer para cada test
+
+    Define la tolerancia que se usará en todas las comparaciones
+
+2. Prueba de forma (test_forward_shape)
+python
+
+def test_forward_shape(self):
+    Z = np.array([[1, 2, 3], [0, 0, 0]])
+    A = self.softmax.forward(Z)
+    self.assertEqual(A.shape, Z.shape)
+
+    Verifica que la salida tenga las mismas dimensiones que la entrada
+
+    Usa assertEqual (comparación exacta) porque son dimensiones (números enteros)
+
+3. Prueba de probabilidades (test_forward_probabilities)
+python
+
+def test_forward_probabilities(self):
+    Z = np.array([[1, 2, 3]])
+    A = self.softmax.forward(Z)
+    # Test rows sum to 1
+    np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+    # Test known values
+    expected = np.array([[0.09003057, 0.24472847, 0.66524096]])
+    np.testing.assert_allclose(A, expected, atol=self.tol)
+
+    Primera verificación: Que la suma de cada fila sea 1 (con tolerancia)
+
+    Segunda verificación: Que los valores coincidan con los esperados (usando tol)
+
+    assert_allclose permite pequeñas diferencias dentro de la tolerancia
+
+4. Prueba de estabilidad numérica (test_forward_stability)
+python
+
+def test_forward_stability(self):
+    Z = np.array([[1000, 1001, 1002]])  # Large numbers test
+    A = self.softmax.forward(Z)
+    np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+
+    Prueba con números grandes donde podría haber problemas de precisión
+
+    Verifica que aún así las filas sumen 1 (dentro de la tolerancia)
+
+¿Por qué no usar igualdad exacta?
+
+En computación, los números flotantes tienen precisión limitada. Por ejemplo:
+
+    El cálculo teórico podría dar 1.0
+
+    El cálculo real podría dar 0.99999999999999989
+
+    Con tol=1e-6, esto se considera correcto
+
+Ejecución de las pruebas
+python
+
+if __name__ == '__main__':
+    unittest.main()
+
+    Esta parte permite ejecutar las pruebas directamente con el comando python archivo.py
+
+    Es el punto de entrada cuando el archivo se ejecuta como script
+
+¿Hay alguna parte específica sobre la que quieras más detalles?
+modify the unittest in order to give feedback to the learner if the solution is incorrect
+
+Here's the modified unittest code that provides detailed feedback to learners when their solution is incorrect:
+python
+
+import unittest
+import numpy as np
+
+class TestSoftmaxForward(unittest.TestCase):
+    def setUp(self):
+        self.softmax = SoftmaxLayer()
+        self.tol = 1e-6
+    
+    def test_forward_shape(self):
+        """Test if output shape matches input shape"""
+        Z = np.array([[1, 2, 3], [0, 0, 0]])
+        A = self.softmax.forward(Z)
+        try:
+            self.assertEqual(A.shape, Z.shape)
+        except AssertionError:
+            print("\n🔴 Error in output shape!")
+            print(f"Expected shape: {Z.shape}, Got: {A.shape}")
+            print("Make sure your softmax implementation returns an array with the same shape as the input")
+            raise
+    
+    def test_forward_probabilities(self):
+        """Test if output probabilities are correct"""
+        Z = np.array([[1, 2, 3]])
+        A = self.softmax.forward(Z)
+        
+        # Test row sums
+        row_sums = np.sum(A, axis=1)
+        try:
+            np.testing.assert_allclose(row_sums, [1.0], atol=self.tol)
+        except AssertionError:
+            print("\n🔴 Error in probability sums!")
+            print(f"Row sums should be approximately 1.0, Got: {row_sums}")
+            print("Your softmax probabilities don't sum to 1. Check your normalization step")
+            print("Remember: A = exp(Z_shifted) / sum(exp(Z_shifted), keeping dimensions with keepdims=True")
+            raise
+        
+        # Test known values
+        expected = np.array([[0.09003057, 0.24472847, 0.66524096]])
+        try:
+            np.testing.assert_allclose(A, expected, atol=self.tol)
+        except AssertionError:
+            print("\n🔴 Error in probability values!")
+            print(f"Expected: {expected}")
+            print(f"Got: {A}")
+            print("Your softmax values don't match expected probabilities")
+            print("Did you remember to shift values by max(Z) before exponentiation?")
+            print("The correct steps are:")
+            print("1. Z_shifted = Z - np.max(Z, axis=1, keepdims=True)")
+            print("2. exp_Z = np.exp(Z_shifted)")
+            print("3. A = exp_Z / np.sum(exp_Z, axis=1, keepdims=True)")
+            raise
+    
+    def test_forward_stability(self):
+        """Test numerical stability with large inputs"""
+        Z = np.array([[1000, 1001, 1002]])
+        A = self.softmax.forward(Z)
+        try:
+            np.testing.assert_allclose(np.sum(A, axis=1), [1.0], atol=self.tol)
+        except AssertionError:
+            print("\n🔴 Numerical stability problem!")
+            print("Your softmax fails with large input values")
+            print("Did you implement the max-shifting trick for numerical stability?")
+            print("Solution: Subtract np.max(Z) before exponentiation to prevent overflow")
+            raise
+
+if __name__ == '__main__':
+    print("Running tests...\n")
+    unittest.main()
+
+Key improvements for learner feedback:
+
+    Detailed Error Messages:
+
+        Each test now provides specific feedback about what went wrong
+
+        Includes both the expected and actual values
+
+        Uses 🔴 red circle emoji to highlight errors
+
+    Diagnostic Help:
+
+        Explains common mistakes for each test case
+
+        Provides hints about likely solutions
+
+        Shows the correct implementation steps when values are wrong
+
+    Structured Output:
+
+        Clear separation between different test failures
+
+        Formatted output that's easy to read
+
+        Progressive hints (from general to specific)
+
+    Test Descriptions:
+
+        Each test method has a docstring explaining its purpose
+
+        Error messages reference these descriptions
+
+Example output when a test fails:
+
+🔴 Error in probability values!
+Expected: [[0.09003057 0.24472847 0.66524096]]
+Got: [[0.33333333 0.33333333 0.33333333]]
+Your softmax values don't match expected probabilities
+Did you remember to shift values by max(Z) before exponentiation?
+The correct steps are:
+1. Z_shifted = Z - np.max(Z, axis=1, keepdims=True)
+2. exp_Z = np.exp(Z_shifted)
+3. A = exp_Z / np.sum(exp_Z, axis=1, keepdims=True)
+
+This version helps learners:
+
+    Understand exactly what went wrong
+
+    See the difference between their output and expected results
+
+    Get hints about how to fix their implementation
+
+    Learn the correct concepts through failure messages
+
+generate notes to the notebook solution that you think are important to share. This is something that would typically not be learner facing.
+
+Here are the instructor-facing notes that would accompany the notebook solution, formatted as markdown comments that would typically be in a separate solution guide or instructor notes:
+markdown
+
+## 🔍 Instructor Notes: Softmax Implementation Solution
+
+### 🎯 Key Learning Objectives
+1. Numerical stability handling in exponential operations
+2. Proper broadcasting in vectorized operations
+3. Validation of probability distribution properties
+
+### ⚠️ Common Pitfalls to Address
+```python
+# Wrong approach (naive implementation - numerically unstable)
+A = np.exp(Z) / np.sum(np.exp(Z), axis=1)  # Fails with large Z values
+
+💡 Implementation Insights
+
+    The keepdims=True is crucial for proper broadcasting:
+    python
+
+    np.max(Z, axis=1, keepdims=True)  # Maintains (n,1) shape
+
+    Without it, subtraction would fail due to shape mismatch
+
+� Debugging Tips
+
+    If probabilities don't sum to 1:
+
+        Verify intermediate shapes with Z_shifted.shape
+
+        Check np.sum() includes keepdims=True
+
+    For NaN values:
+
+        Likely overflow - confirm max-shifting is implemented
+
+        Test with extreme values (>>1000)
+
+🏗️ Extension Ideas
+
+    Add input validation:
+    python
+
+    if not isinstance(Z, np.ndarray):
+        raise TypeError("Input must be numpy array")
+
+    Optimize with log-space operations for better numerical stability
+
+    Implement batch processing for large inputs
+
+📊 Test Case Design Rationale
+Test Case	Purpose	Edge Case Covered
+[1,2,3]	Basic functionality	-
+[0,0,0]	Equal probabilities	Zero input
+[1000,1001,1002]	Numerical stability	Large values
+⏱ Performance Considerations
+
+    Vectorized operations are ~100x faster than Python loops
+
+    Memory usage grows with exp() operations - warn for very large matrices
+
+🎓 Teaching Moments
+
+    The max-shifting trick is mathematically sound because:
+    math
+
+    \frac{e^{x_i}}{\sum e^{x_j}} = \frac{e^{x_i-M}}{\sum e^{x_j-M}}
+
+    Explain why we don't need self.cache in forward-only implementation
+
+📚 Recommended References
+
+    Deep Learning (Goodfellow et al.) - Chapter 6.2
+
+    Numerical Recipes, 3rd Ed. - Chapter 5.13
+
+
+These notes would help instructors:
+1. Anticipate student questions
+2. Explain subtle implementation details
+3. Provide meaningful extensions
+4. Understand the pedagogical design choices
+5. Troubleshoot common issues
+
+The notes assume instructor familiarity with:
+- Numerical computing challenges
+- Python's broadcasting rules
+- Basic probability theory
+- Neural network fundamentals
+
+Include a Docker setup in the repository for easy execution.
+○ Your repository must include a Dockerfi le to allow anyone to set up and run your project with minimal eff ort.
+○ The Docker container should start a Jupyter Lab server where the assignment notebook is accessible.
+
+Here's a complete Docker setup for your machine learning assignment repository:
+1. Dockerfile
+dockerfile
+
+# Use official Jupyter notebook image with Python 3.9
+FROM jupyter/base-notebook:python-3.9
+
+# Set the working directory
+WORKDIR /home/jovyan/work
+
+# Install required Python packages
+RUN pip install --no-cache-dir \
+    numpy==1.23.5 \
+    scikit-learn==1.2.2 \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+# Copy the assignment files
+COPY . .
+
+# Fix permissions
+USER root
+RUN chown -R jovyan:users /home/jovyan/work
+USER jovyan
+
+# Set the default command to start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
+2. .dockerignore
+
+.git
+__pycache__
+*.pyc
+.DS_Store
+.env
+*.ipynb_checkpoints
+
+3. README.md Instructions (Add this section)
+markdown
+
+## 🐳 Docker Setup
+
+1. **Build the image**:
+   ```bash
+   docker build -t ml-assignment .
+
+    Run the container:
+    bash
+
+docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+Access Jupyter Lab:
+
+    Open the URL shown in your terminal (look for http://127.0.0.1:8888/lab?token=...)
+
+    The token will be displayed in the console output
+
+Stop the container:
+bash
+
+    docker ps  # Note the container ID
+    docker stop <container_id>
+
+
+### 4. Recommended Project Structure
+
+/ml-assignment/
+│
+├── Dockerfile
+├── .dockerignore
+├── README.md
+├── assignment/
+│ ├── softmax_exercise.ipynb
+│ ├── softmax_layer.py
+│ └── tests/
+│ └── test_softmax.py
+└── requirements.txt (optional)
+
+
+### Key Features of This Setup:
+
+1. **Pre-configured Environment**:
+   - Uses the official Jupyter image
+   - Includes all required Python packages
+   - Sets up proper file permissions
+
+2. **Development Convenience**:
+   - Volume mounting (`-v` flag) allows live edits
+   - All dependencies are pinned for reproducibility
+
+3. **Security**:
+   - Runs as non-root user (`jovyan`)
+   - Includes proper `.dockerignore`
+
+4. **Portability**:
+   - Works on Windows/Mac/Linux
+   - No local Python installation required
+
+5. **Jupyter Lab Features**:
+   - Full IDE capabilities
+   - Terminal access
+   - File browser
+
+To update the environment, simply modify the `Dockerfile` and rebuild the image. This setup ensures all learners get an identical environment regardless of their local machine configuration.
+
+explain me how to setup the docker, I am new on this
+Docker Setup Guide for Beginners 🐳
+
+If you're new to Docker, don't worry! This step-by-step guide will help you set up the environment to run the machine learning assignment.
+What is Docker?
+
+Docker is a platform that packages software into standardized units called containers that include everything needed to run the software (code, runtime, system tools, libraries). It's like a lightweight virtual machine.
+Prerequisites
+
+    Install Docker on your machine:
+
+        Windows/Mac
+
+        Linux: Use your package manager (e.g., sudo apt install docker.io)
+
+Step-by-Step Setup
+1. Open Terminal/Command Prompt
+
+    Windows: Use PowerShell or Command Prompt
+
+    Mac/Linux: Use Terminal
+
+2. Navigate to Your Project Folder
+bash
+
+cd path/to/your/ml-assignment-folder
+
+3. Build the Docker Image
+bash
+
+docker build -t ml-assignment .
+
+    This reads the Dockerfile and creates an image with all dependencies
+
+    The . at the end means "use the Dockerfile in current directory"
+
+    First time may take 5-10 minutes to download base images
+
+4. Run the Container
+bash
+
+docker run -p 8888:8888 -v ${PWD}:/home/jovyan/work ml-assignment
+
+    -p 8888:8888 maps port 8888 from container to your host
+
+    -v ${PWD}:/home/jovyan/work connects your current folder to the container
+
+    On Windows PowerShell, use $(pwd) instead of ${PWD}
+
+5. Access Jupyter Lab
+
+After running, you'll see output like:
+
+[I 2023-08-15 12:34:56.123 ServerApp] Jupyter Server 1.23.0 is running at:
+[I 2023-08-15 12:34:56.123 ServerApp] http://hostname:8888/lab?token=abcdef12345...
+
+    Copy the URL starting with http://localhost:8888...
+
+    Paste it into your web browser
+
+    You're now in Jupyter Lab!
+
+6. Working with Files
+
+    All your project files will appear in the file browser
+
+    Any changes you make will be saved to your actual folder (thanks to the -v volume mount)
+
+7. Stopping the Container
+
+    Open a new terminal window
+
+    List running containers:
+    bash
+
+docker ps
+
+Stop your container (replace CONTAINER_ID with actual ID):
+bash
+
+    docker stop CONTAINER_ID
+
+Troubleshooting Tips
+
+🔹 Port already in use?
+bash
+
+docker run -p 8889:8888 ...  # Use a different port
+
+🔹 Permission errors on Linux?
+bash
+
+sudo usermod -aG docker $USER  # Add your user to docker group
+newgrp docker  # Refresh group permissions
+
+🔹 Forgot the token?
+Check logs with:
+bash
+
+docker logs CONTAINER_ID
+
+Key Benefits of This Setup
+
+✅ No Python installation needed on your machine
+✅ All dependencies are pre-installed
+✅ Works the same on Windows/Mac/Linux
+✅ Easy to share with others
+
+Would you like me to explain any part in more detail? The first time setup might take a bit of time, but once it's working, you'll have a perfect environment for running the assignment!
+I ran the container but it pops the error: docker: invalid reference format
+
+This error typically occurs when Docker doesn't understand the command format. Let's fix this step by step:
+Most Common Cause
+
+The error "invalid reference format" usually means:
+
+    You're missing the period (.) at the end of the build command, or
+
+    There are special characters in your paths, or
+
+    You're using PowerShell on Windows without proper syntax
+
+Step-by-Step Solution
+1. Verify Your Current Directory
+
+First, make sure you're in the right folder containing the Dockerfile:
+bash
+
+ls  # Should show Dockerfile in the output
+
+2. For Windows Users (PowerShell vs CMD)
+
+In PowerShell:
+powershell
+
+docker build -t ml-assignment .
+docker run -p 8888:8888 -v ${PWD}:/home/jovyan/work ml-assignment
+
+In Command Prompt (CMD):
+cmd
+
+docker build -t ml-assignment .
+docker run -p 8888:8888 -v %cd%:/home/jovyan/work ml-assignment
+
+3. For Mac/Linux Users
+bash
+
+docker build -t ml-assignment .
+docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+4. Common Fixes
+
+If you still get errors:
+
+    Check for special characters in your path:
+
+        Avoid spaces (use my_project instead of my project)
+
+        Avoid non-ASCII characters
+
+    Try specifying the full path:
+
+bash
+
+docker run -p 8888:8888 -v /full/path/to/your/folder:/home/jovyan/work ml-assignment
+
+    Make sure the image built successfully:
+
+bash
+
+docker images  # Should list "ml-assignment"
+
+5. Alternative Approach (If Still Failing)
+
+    Build without cache:
+
+bash
+
+docker build --no-cache -t ml-assignment .
+
+    Run with simplified volume mount:
+
+bash
+
+docker run -p 8888:8888 ml-assignment
+
+(Note: This will run Jupyter but won't sync with your host files)
+Verification Steps
+
+    After successful build, check your images:
+
+bash
+
+docker images
+
+Should show:
+
+REPOSITORY      TAG       IMAGE ID       CREATED         SIZE
+ml-assignment   latest    abc123...      2 minutes ago   1.2GB
+
+    Check running containers:
+
+bash
+
+docker ps
+
+If you still encounter issues, please:
+
+    Share your exact command
+
+    Share your operating system
+
+    Share the complete error message
+
+Would you like me to explain any part in more detail?
+I build de docker image but it pops up the following error:
+
+error [3/5] RUN pip install --no-cache-dir numpy==1.23.5 scikit-learn==1.2.2
+
+This error typically occurs during the Docker image build process when pip fails to install the specified packages. Let's troubleshoot this step by step:
+Most Likely Causes
+
+    Network connectivity issues preventing pip from accessing PyPI
+
+    Package version conflicts (especially with Python 3.9+)
+
+    Outdated pip version in the base image
+
+Step-by-Step Solution
+1. Update the Dockerfile
+
+Replace the pip install line with this more robust version:
+dockerfile
+
+# Install required Python packages with upgraded pip
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy==1.23.5 \
+    scikit-learn==1.2.2 \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+2. Clean Build Process
+
+Run these commands in sequence:
+bash
+
+# Stop any running containers
+docker stop $(docker ps -aq)
+
+# Remove old containers
+docker rm $(docker ps -aq)
+
+# Remove old images
+docker rmi ml-assignment
+
+# Rebuild with no cache
+docker build --no-cache -t ml-assignment .
+
+3. Alternative Approach (If Still Failing)
+
+Modify the Dockerfile to use conda instead of pip:
+dockerfile
+
+FROM jupyter/minimal-notebook:python-3.9
+
+RUN conda install -y \
+    numpy=1.23.5 \
+    scikit-learn=1.2.2 && \
+    pip install --no-cache-dir \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+4. Network Troubleshooting
+
+If you're behind a corporate proxy/firewall:
+bash
+
+# Build with network host mode
+docker build --network host -t ml-assignment .
+
+Common Fixes for Specific Errors
+
+If you see "Could not find a version that satisfies":
+
+    Try newer package versions:
+    dockerfile
+
+    numpy==1.24.3 \
+    scikit-learn==1.3.0 \
+
+If you see SSL errors:
+
+    Add this before pip install:
+    dockerfile
+
+    RUN apt-get update && apt-get install -y ca-certificates
+
+If building takes forever:
+
+    Use a faster pip mirror:
+    dockerfile
+
+    RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+Verification
+
+After successful build, check the packages:
+bash
+
+docker run -it ml-assignment python -c "import numpy; print(numpy.__version__)"
+
+Should output:
+
+1.23.5
+
+Would you like me to:
+
+    Explain any part in more detail?
+
+    Provide alternative package versions?
+
+    Suggest a different base image?
+
+explain this line: docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+Let me break down this Docker command in detail:
+
+docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+Command Structure Explained
+
+    docker run
+    The base command to start a new container from an image
+
+    -p 8888:8888
+    The port mapping flag (-p or --publish)
+
+        Format: -p HOST_PORT:CONTAINER_PORT
+
+        Maps port 8888 on your local machine to port 8888 inside the container
+
+        Jupyter Lab runs on port 8888 by default inside the container
+
+        You could change the first 8888 to another port if 8888 is busy on your host (e.g., -p 8889:8888)
+
+    -v $(pwd):/home/jovyan/work
+    The volume mount flag (-v or --volume)
+
+        Format: -v HOST_PATH:CONTAINER_PATH
+
+        $(pwd): Gets your current working directory (on Mac/Linux)
+
+            Windows PowerShell: Use ${PWD}
+
+            Windows CMD: Use %cd%
+
+        /home/jovyan/work: The working directory in the container (Jupyter's default)
+
+        This creates a live link between folders - any changes you make in either location will sync automatically
+
+    ml-assignment
+    The name of the Docker image to run (what you built with docker build -t ml-assignment)
+
+Visual Representation
+
+Your Computer (Host)                Docker Container
+────────────────────────────────    ──────────────────
+Port 8888   ←forwarded→   Port 8888  (Jupyter Lab)
+/path/to/your/files  ←sync→  /home/jovyan/work
+
+Why This Matters
+
+    Port Mapping (-p)
+
+        Without it, you couldn't access Jupyter Lab in your browser
+
+        The container's network is isolated by default
+
+    Volume Mount (-v)
+
+        Makes your files available to the container
+
+        Saves your work persistently (containers are temporary by default)
+
+        Allows using your favorite IDE on host while running code in container
+
+Example Flow
+
+    You edit notebook.ipynb in VS Code on your host machine
+
+    The changes instantly appear in Jupyter Lab (running in container)
+
+    You save results in Jupyter Lab
+
+    The saved files appear in your host machine's folder
+
+Common Variations
+
+    Detached mode (run in background):
+    bash
+
+docker run -d -p 8888:8888 -v $(pwd):/work ml-assignment
+
+Different port (if 8888 is busy):
+bash
+
+docker run -p 8999:8888 -v $(pwd):/work ml-assignment
+
+Read-only volume (prevent container from modifying files):
+bash
+
+    docker run -p 8888:8888 -v $(pwd):/work:ro ml-assignment
+
+Would you like me to demonstrate any specific scenario or explain further about any component?
+explain me the Dockerfile code
+
+Here's a detailed explanation of each part of the Dockerfile, with annotations:
+dockerfile
+
+# Use official Jupyter notebook image with Python 3.9
+FROM jupyter/base-notebook:python-3.9
+
+▪ Purpose: Sets the base image
+▪ Details:
+
+    Uses Jupyter's pre-configured image (jupyter/base-notebook)
+
+    Specifically the Python 3.9 version
+
+    Includes Jupyter Lab, notebook, and basic Python tools
+
+    Image size: ~1GB (smaller than starting from Ubuntu+manual install)
+
+dockerfile
+
+# Set the working directory
+WORKDIR /home/jovyan/work
+
+▪ Purpose: Defines where commands will execute
+▪ Details:
+
+    /home/jovyan is the default user home in Jupyter images
+
+    work is the conventional working directory
+
+    All subsequent commands (COPY, RUN) will use this path
+
+dockerfile
+
+# Install required Python packages
+RUN pip install --no-cache-dir \
+    numpy==1.23.5 \
+    scikit-learn==1.2.2 \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+▪ Purpose: Installs dependencies
+▪ Key Options:
+
+    --no-cache-dir: Reduces image size by not storing download cache
+
+    Pinned versions (==1.23.5): Ensures reproducible builds
+    ▪ Package Roles:
+
+    numpy: Fundamental math operations
+
+    scikit-learn: Machine learning utilities
+
+    pytest/ipytest: Testing framework
+
+dockerfile
+
+# Copy the assignment files
+COPY . .
+
+▪ Purpose: Adds your local files to the image
+▪ What's Copied:
+
+    All files from current directory (first .)
+
+    Into container's working dir (second .)
+    ▪ Best Practice:
+
+    Use .dockerignore to exclude unnecessary files
+
+    Better than bind mounts for production deployments
+
+dockerfile
+
+# Fix permissions
+USER root
+RUN chown -R jovyan:users /home/jovyan/work
+USER jovyan
+
+▪ Purpose: Ensures file accessibility
+▪ Why Needed:
+
+    Files copied as root by default
+
+    Jupyter runs as non-root jovyan user for security
+
+    chown changes file ownership to match runtime user
+
+dockerfile
+
+# Set the default command to start Jupyter Lab
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
+▪ Purpose: Auto-starts Jupyter when container runs
+▪ Flags Explained:
+
+    --ip=0.0.0.0: Allows external connections
+
+    --port=8888: Standard Jupyter port
+
+    --no-browser: Don't try launching browser in container
+
+    --allow-root: Backup in case user switching fails
+
+Key Dockerfile Concepts Illustrated:
+
+    Layering: Each instruction creates a new layer (like git commits)
+
+    Order Matters:
+
+        Frequent changes (like code) should come late in the file
+
+        Infrequent changes (like package installs) should come early
+
+    Security:
+
+        Runs as non-root user (jovyan)
+
+        Minimal packages installed
+
+    Reproducibility:
+
+        Pinned versions for all dependencies
+
+        Clean environment every build
+
+Visual Build Process:
+
+    Starts with base OS + Python + Jupyter
+
+    Adds your custom packages
+
+    Copies your code
+
+    Sets up permissions
+
+    Configures startup command
+
+Would you like me to explain any specific part in more depth or suggest optimizations?
+I tried to run the container but it pops up the following error: Unable to find image 'ml-assignment:latest' locally
+
+This error occurs when Docker can't find the specified image. Let me explain why this happens and how to fix it:
+Why This Error Occurs
+
+    Image Not Built: You tried to run before building the image
+
+    Name Mismatch: The image name in docker run doesn't match what you built
+
+    Tag Missing: You didn't specify a tag when building
+
+How to Fix It
+1. First, Verify Your Image Exists
+bash
+
+docker images
+
+You should see ml-assignment in the list. If not, you need to build it.
+2. Build the Image Properly
+bash
+
+# Navigate to directory containing Dockerfile
+cd /path/to/your/project
+
+# Build with tag (-t) flag
+docker build -t ml-assignment .
+
+The . at the end is crucial - it tells Docker where the Dockerfile is.
+3. Then Run It
+bash
+
+docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+Common Mistakes & Solutions
+
+Mistake 1: Forgetting to build first
+✅ Solution: Always build before running
+
+Mistake 2: Wrong directory when building
+✅ Solution:
+bash
+
+cd /correct/path
+ls  # Verify Dockerfile is listed
+docker build -t ml-assignment .
+
+Mistake 3: Using different names
+✅ Consistent naming:
+bash
+
+docker build -t my-image .  # Build
+docker run my-image        # Must match exactly
+
+Mistake 4: Windows path issues
+✅ PowerShell solution:
+powershell
+
+docker build -t ml-assignment .
+docker run -p 8888:8888 -v ${PWD}:/home/jovyan/work ml-assignment
+
+Verification Steps
+
+    Check image exists:
+    bash
+
+docker images | grep ml-assignment
+
+Check container runs:
+bash
+
+    docker run -it ml-assignment python -c "print('Working!')"
+
+Full Correct Workflow
+bash
+
+# 1. Go to project directory
+cd ~/projects/ml-assignment
+
+# 2. Build (only needed once, or after changes)
+docker build -t ml-assignment .
+
+# 3. Run
+docker run -p 8888:8888 -v $(pwd):/home/jovyan/work ml-assignment
+
+# 4. Access Jupyter at http://localhost:8888
+
+Remember: The image name (ml-assignment) must be identical in both build and run commands. Would you like me to explain any part in more detail?
+now it pops up the following error: error [3/5] RUN pip install --no-cache-dir numpy==1.23.5
+
+The error you're encountering during the pip install step typically occurs due to one of these reasons:
+Most Common Causes
+
+    Network connectivity issues (unable to reach PyPI servers)
+
+    Python version incompatibility with the specified package versions
+
+    Outdated pip version in the base image
+
+    Corporate firewall/proxy restrictions
+
+Step-by-Step Solutions
+1. First Try: Upgrade pip first
+
+Modify your Dockerfile:
+dockerfile
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy==1.23.5 \
+    scikit-learn==1.2.2 \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+2. Second Try: Use newer package versions
+dockerfile
+
+RUN pip install --no-cache-dir \
+    numpy==1.24.4 \
+    scikit-learn==1.3.2 \
+    pytest==7.4.0 \
+    ipytest==0.13.3
+
+3. Third Try: Use conda instead (more stable for scientific packages)
+dockerfile
+
+FROM jupyter/minimal-notebook:python-3.9
+
+RUN conda install -y \
+    numpy=1.23.5 \
+    scikit-learn=1.2.2 && \
+    pip install --no-cache-dir \
+    pytest==7.3.1 \
+    ipytest==0.13.3
+
+4. Network-Specific Solutions
+
+If behind corporate proxy:
+dockerfile
+
+ENV PIP_PROXY=http://your.proxy.address:port
+
+For Chinese users (faster mirror):
+dockerfile
+
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+Clean Rebuild Process
+
+After making changes:
+bash
+
+# Clean old builds
+docker system prune -a
+
+# Rebuild with no cache
+docker build --no-cache -t ml-assignment .
+
+Verification
+
+Check if numpy installed successfully:
+bash
+
+docker run ml-assignment python -c "import numpy; print(numpy.__version__)"
+
+Alternative Approach
+
+If still failing, try this minimal test Dockerfile:
+dockerfile
+
+FROM python:3.9-slim
+RUN pip install numpy==1.23.5
+
+This helps isolate whether the issue is with:
+
+    Your network (if this fails)
+
+    The Jupyter image (if this works but original fails)
+
+    Your specific package combination
+
+Would you like me to:
+
+    Explain any specific error message you're seeing?
+
+    Provide alternative base images?
+
+    Suggest a different Python version?
+
+now i have the error: cannot import name 'mappingproxytyp'
+
+This error typically occurs when there's a mismatch between Python versions and package dependencies. Let's fix this step by step:
+Root Cause
+
+The error cannot import name 'mappingproxytype' usually indicates:
+
+    A conflict between Python 3.9+ and older package versions
+
+    Corrupted installation of core Python types
+
+Solution
+1. Update Your Dockerfile
+
+Replace your current package installation section with:
+dockerfile
+
+# Install updated versions that work with Python 3.9
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir \
+    numpy==1.24.4 \
+    scikit-learn==1.3.2 \
+    pytest==7.4.0 \
+    ipytest==0.13.3
+
+2. Alternative: Use Newer Python Base Image
+dockerfile
+
+FROM jupyter/base-notebook:python-3.10
+
+3. Clean Rebuild Process
+bash
+
+# Clean up old containers and images
+docker system prune -a
+
+# Rebuild with no cache
+docker build --no-cache -t ml-assignment .
+
+Why This Works
+
+    mappingproxytype is a core Python type that changed in Python 3.9
+
+    Older package versions (especially numpy) may have compatibility issues
+
+    The updated versions ensure proper type handling
+
+Verification
+
+After rebuilding, test with:
+bash
+
+docker run -it ml-assignment python -c "from types import mappingproxy; print('Import successful')"
+
+Additional Troubleshooting
+
+If you still see issues:
+
+    Try with Python 3.10 base image
+
+    Check for corporate firewalls/proxies
+
+    Test with just numpy first:
+    dockerfile
+
+    RUN pip install numpy==1.24.4
+
+Would you like me to explain any part in more detail or suggest alternative approaches?
+I already build the the image succesfully. What is the nex step?
+
+Now that you've successfully built your Docker image (ml-assignment), here are the next steps to run and use it:
+1. Run the Container
+bash
+
+docker run -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
+
+    This will start Jupyter Lab inside the container.
+
+    You'll see output containing a URL with an access token like:
+
+    http://127.0.0.1:8888/lab?token=abcdef123456...
+
+2. Access Jupyter Lab
+
+    Copy the URL from the terminal output (starts with http://localhost:8888)
+
+    Paste it into your web browser
+
+    You should see Jupyter Lab with your assignment files
+
+3. Work with Your Notebooks
+
+    Navigate to your notebook files in the file browser
+
+    Create/edit notebooks as needed
+
+    All changes will be saved to your local folder (thanks to the -v volume mount)
+
+4. Alternative Run Options
+
+For background operation:
+bash
+
+docker run -d -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
+
+    -d runs the container in detached mode
+
+    Check logs with docker logs <container_id>
+
+For direct notebook access:
+bash
+
+docker run -it -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment jupyter notebook
+
+5. When Finished
+
+    Save all your work in Jupyter
+
+    Stop the container:
+    bash
+
+    # List running containers
+    docker ps
+    # Stop your container
+    docker stop <container_id>
+
+Key Points to Remember
+
+    The -v flag keeps your files synced between host and container
+
+    Your work persists even after container stops (saved to your local folder)
+
+    To restart later, just run the same docker run command
+
+Would you like me to explain any part of this process in more detail?
+I got the following error: Error response from daemon: create $(pwd): "$(pwd)" includes invalid characters for a local volume name, only "[a-zA-Z0-9][a-zA-Z0-9_.-]" are allowed. If you intended to pass a host directory, use absolute path
+
+This error occurs because Docker isn't interpreting $(pwd) correctly in your shell. Let's fix this for your specific operating system:
+Solution by Operating System
+For Mac/Linux (Terminal):
+bash
+
+docker run -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
+
+(or)
+bash
+
+docker run -p 8888:8888 -v `pwd`:/home/jovyan/work ml-assignment
+
+For Windows PowerShell:
+powershell
+
+docker run -p 8888:8888 -v "${PWD}:/home/jovyan/work" ml-assignment
+
+For Windows Command Prompt (CMD):
+cmd
+
+docker run -p 8888:8888 -v "%cd%:/home/jovyan/work" ml-assignment
+
+Alternative: Use Absolute Path (Works Everywhere)
+
+    First get your full project path:
+
+        Mac/Linux: Run pwd in terminal
+
+        Windows: Run cd in CMD or pwd in PowerShell
+
+    Then use:
+    bash
+
+    docker run -p 8888:8888 -v /full/path/to/your/project:/home/jovyan/work ml-assignment
+
+Why This Happens
+
+    Docker expects either:
+
+        A properly expanded path (like /Users/you/project)
+
+        A correctly formatted environment variable (${PWD} in PowerShell)
+
+    The error suggests Docker received the literal text $(pwd) instead of the expanded path
+
+Verification
+
+After running correctly, you should see:
+
+    Jupyter Lab starting up in your terminal
+
+    A token-containing URL you can access in your browser
+
+    Your local files visible in Jupyter's file browser
+
+Would you like me to explain any part in more detail?
+I need to put the container in github. What to do in order anyone can run the container?
+
+To make your Docker container available on GitHub so others can run it, follow these steps:
+1. Prepare Your GitHub Repository
+
+    Create a new repository or use an existing one
+
+    Include these essential files:
+
+    your-repo/
+    ├── Dockerfile             # Your container definition
+    ├── .dockerignore         # Files to exclude from builds
+    ├── requirements.txt      # Python dependencies (optional)
+    ├── README.md             # Clear instructions
+    └── src/                  # Your application code
+
+2. Create a Detailed README.md
+
+Include these sections in your README:
+markdown
+
+# Project Name
+
+## 🐳 Docker Setup
+
+### Prerequisites
+- Docker installed ([Install Guide](https://docs.docker.com/get-docker/))
+
+### Running the Container
+```bash
+# 1. Clone this repository
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+
+# 2. Build the Docker image
+docker build -t ml-assignment .
+
+# 3. Run the container
+docker run -p 8888:8888 -v "$(pwd)":/home/jovyan/work ml-assignment
+
+# 4. Access Jupyter Lab at:
+http://localhost:8888
+```
+
+### Alternative for Windows Users
+```powershell
+docker run -p 8888:8888 -v "${PWD}:/home/jovyan/work" ml-assignment
+```
+
+3. Optimize Your Docker Setup
+
+    .dockerignore (prevent including unnecessary files):
+
+__pycache__
+*.pyc
+.DS_Store
+.git
+.env
+*.ipynb_checkpoints
+
+Multi-platform Support (in Dockerfile):
+dockerfile
+
+    # syntax=docker/dockerfile:1
+    FROM --platform=linux/amd64 jupyter/base-notebook:python-3.9
+
+4. Publish to GitHub
+bash
+
+git init
+git add .
+git commit -m "Initial commit with Docker support"
+git branch -M main
+git remote add origin https://github.com/your-username/your-repo.git
+git push -u origin main
+
+5. Alternative: Publish to Docker Hub
+
+For even easier sharing:
+
+    Create account at Docker Hub
+
+    Build and push your image:
+    bash
+
+docker build -t your-dockerhub-username/ml-assignment .
+docker push your-dockerhub-username/ml-assignment
+
+Update README with simpler run command:
+bash
+
+    docker run -p 8888:8888 your-dockerhub-username/ml-assignment
+
+Best Practices
+
+    Version your images:
+    bash
+
+docker build -t ml-assignment:v1 .
+
+Add health checks (in Dockerfile):
+dockerfile
+
+HEALTHCHECK --interval=30s CMD python -c "import requests; requests.get('http://localhost:8888')"
+
+Include a test script:
+python
+
+    # tests/test_container.py
+    import numpy
+    assert numpy.__version__ == "1.23.5"
+
+Users can then either:
+
+    Clone and build locally (good for development)
+
+    Pull from Docker Hub (simplest for end users)
+
+Would you like me to provide a template for any of these files?
+en donde corro lo siguiente: "git clone https://github.com/your-username/your-repo.git"?
+
+Para correr el comando git clone, debes seguir estos pasos:
+📍 Dónde ejecutarlo:
+
+    Abre una terminal (dependiendo de tu sistema operativo):
+
+        Windows: Usa PowerShell o CMD (presiona Win + R, escribe cmd o powershell)
+
+        Mac: Busca Terminal (en Aplicaciones > Utilidades)
+
+        Linux: Usa tu terminal predeterminada (Ctrl+Alt+T en Ubuntu)
+
+    Navega a la carpeta donde quieres clonar el repositorio (opcional):
+    bash
+
+cd /ruta/de/tu/carpeta
+
+(Ejemplo: cd ~/Documents para guardarlo en "Documentos")
+
+Ejecuta el comando de clonación:
+bash
+
+    git clone https://github.com/your-username/your-repo.git
+
+🔍 Qué sucede después:
+
+    Git descargará todo el repositorio en una carpeta llamada your-repo (o el nombre del repo).
+
+    Verás algo como:
+
+    Cloning into 'your-repo'...
+    remote: Enumerating objects: 100, done.
+    remote: Counting objects: 100% (100/100), done.
+    Receiving objects: 100% (100/100), 1.23 MiB | 2.45 MiB/s, done.
+
+📂 Estructura resultante:
+
+tu/carpeta/actual/
+└── your-repo/       # Nueva carpeta creada
+    ├── Dockerfile
+    ├── README.md
+    └── src/
+
+💡 Consejos importantes:
+
+    Reemplaza la URL: Cambia your-username/your-repo por la URL real de tu repositorio (ej: https://github.com/teslamotors/ml-assignment.git).
+
+    Si usas GitHub CLI (opcional):
+    bash
+
+gh repo clone your-username/your-repo
+
+Para actualizar luego:
+bash
+
+    cd your-repo
+    git pull
+
+⚠️ Errores comunes:
+
+    "git: command not found": Instala Git primero (Descargas).
+
+    "Repository not found": Verifica que:
+
+        El repositorio exista
+
+        No tenga errores de tipeo
+
+        No sea privado (si lo es, necesitarás autenticarte).
+
+¿Necesitas ayuda con algún paso en particular? 😊
+when I ran it in cmd, it pops up the following errror: "git" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+This error means Git isn't installed or configured on your Windows system. Here's how to fix it:
+Solution: Install Git Properly
+1. Download Git for Windows
+
+Download the installer from the official site:
+👉 https://git-scm.com/download/win
+2. Run the Installer
+
+During installation:
+
+    Check "Add Git to PATH" (most important!)
+
+    [✓] Git from the command line and also from 3rd-party software
+
+    Keep other options as default
+
+    Complete the installation
+
+3. Verify Installation
+
+Open a new CMD window (important!) and run:
+cmd
+
+git --version
+
+You should see something like:
+
+git version 2.40.1.windows.1
+
+4. Now Try Cloning Again
+cmd
+
+git clone https://github.com/your-username/your-repo.git
+
+Alternative Methods
+If you can't install Git:
+
+    Download ZIP directly from GitHub:
+
+        Go to your repository on GitHub
+
+        Click "Code" → "Download ZIP"
+
+        Extract the files
+
+    Use GitHub Desktop (GUI alternative):
+    👉 https://desktop.github.com/
+
+Why This Happens
+
+Windows doesn't include Git by default. The error:
+
+"git" no se reconoce...
+
+means Windows can't find the git.exe program in your system's PATH.
+Troubleshooting
+
+If still not working after install:
+
+    Restart your computer
+
+    Check PATH manually:
+    cmd
+
+    path
+
+    Should include Git\cmd (like C:\Program Files\Git\cmd)
+
+    Reinstall Git and verify the PATH option is checked
+
+Would you like me to guide you through any specific part of the installation? 😊
+I would like to install docker in google colab, please help me
+
+While Google Colab doesn't natively support running Docker containers, you can use a workaround with Colab's Linux VM and Ngrok to expose ports. Here's how to set it up:
+Method: Run Docker in Colab via Linux VM
+
+(This creates a temporary Docker environment that lasts only for your session)
+Step 1: Run Setup Commands
+
+Paste this in a Colab cell and execute:
+python
+
+!apt-get update
+!apt-get install -y docker.io
+!systemctl start docker
+!docker --version  # Verify installation
+
+Step 2: Build and Run Your Container
+python
+
+# Example: Build a Python image
+!docker build -t my-colab-docker - <<EOF
+FROM python:3.9
+RUN pip install numpy pandas
+EOF
+
+# Run the container interactively
+!docker run -it my-colab-docker python -c "import numpy; print(numpy.__version__)"
+
+Step 3: Expose a Port (Optional)
+
+If you need to access a web service (e.g., Jupyter Lab on port 8888):
+python
+
+# Install ngrok (for tunneling)
+!pip install pyngrok
+from pyngrok import ngrok
+
+# Start Docker container in background
+!docker run -d -p 8888:8888 -e JUPYTER_TOKEN=yourpassword jupyter/base-notebook
+
+# Expose port via ngrok
+public_url = ngrok.connect(8888, "http")
+print("Access Jupyter Lab at:", public_url)
+
+Key Limitations
+
+    Ephemeral Environment: Changes disappear when the Colab session ends.
+
+    No GPU Access: Colab's GPU won't be available inside Docker.
+
+    Limited Resources: Colab's VM has only ~12GB RAM.
+
+Alternative: Use Colab's Native Python
+
+For most ML tasks, you can skip Docker and use Colab's pre-installed Python directly:
+python
+
+!pip install numpy pandas  # Install packages directly
+
+Permanent Solution
+
+If you need persistent Docker, consider:
+
+    Google Cloud Shell (free with GCP account)
+    → Has Docker preinstalled
+    → Run docker commands directly
+
+    Local Docker + Colab SSH
+    → Guide to connect Colab to local runtime
+
+Would you like help with a specific Docker setup (e.g., Jupyter, TensorFlow, etc.)? 😊
+when I run "!docker build -t ml-assignment .", google colab pops up the error: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+The error occurs because Google Colab's virtual machine doesn't have Docker running by default. Here's how to fix it and run Docker properly in Colab:
+Solution: Temporary Docker Setup in Colab
+
+Run these commands in order in a Colab cell:
+python
+
+# 1. Install Docker
+!apt-get update
+!apt-get install -y docker.io
+
+# 2. Start Docker daemon (requires root)
+!sudo service docker start
+
+# 3. Verify Docker is running
+!docker --version
+!sudo docker info  # Check daemon status
+
+# 4. Add Colab user to docker group (avoid sudo)
+!sudo usermod -aG docker root
+
+Now build your image:
+python
+
+# 5. Build your Docker image (must use sudo)
+!sudo docker build -t ml-assignment .
+
+Alternative: Use Docker-in-Docker (More Reliable)
+python
+
+# Run a privileged Docker container
+!docker run --privileged -d -name docker-in-docker docker:dind
+
+# Execute commands inside this container
+!docker exec docker-in-docker docker build -t ml-assignment .
+
+Key Notes
+
+    Colab Limitations:
+
+        Docker only works for the current session
+
+        No GPU access inside containers
+
+        Port forwarding requires Ngrok (see below)
+
+    To Access Ports (e.g., Jupyter):
+    python
+
+!pip install pyngrok
+from pyngrok import ngrok
+
+# Run your container
+!sudo docker run -d -p 8888:8888 ml-assignment
+
+# Create tunnel
+public_url = ngrok.connect(8888)
+print("Access at:", public_url)
+
+For Persistent Storage:
+python
+
+    # Mount Google Drive
+    from google.colab import drive
+    drive.mount('/content/drive')
+
+    # Build with volume
+    !sudo docker build -t ml-assignment -v /content/drive/MyDrive/your_folder:/data .
+
+Recommended Workflow
+
+    Develop your Dockerfile locally first
+
+    Test basic functionality in Colab
+
+    For production, use:
+
+        Google Cloud Run
+
+        AWS/GCP VMs
+
+        Local Docker with Colab SSH
+
+Would you like me to explain any part in more detail? 😊
+when I run "!sudo service docker start" google colab pops up the error "docker: unrecognized service"
+
+The error occurs because Google Colab's lightweight VM doesn't include the standard Docker service. Here's a working solution:
+Proper Docker Setup in Colab (Updated 2024)
+python
+
+# 1. Install Docker correctly (not docker.io)
+!curl -fsSL https://get.docker.com | sh
+
+# 2. Start the Docker daemon manually (Colab-specific)
+!nohup dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 &
+
+# 3. Verify installation (wait 10 secs after starting)
+!sleep 10 && docker ps
+
+Build Your Image
+python
+
+# 4. Build without sudo (after proper setup)
+!docker build -t ml-assignment .
+
+Why This Works
+
+    The official Docker install script (get.docker.com) works better than docker.io in Colab
+
+    nohup keeps the daemon running in background
+
+    Explicit socket configuration avoids permission issues
+
+Alternative: Use Podman (Docker-compatible, no daemon needed)
+python
+
+# Install podman
+!apt-get update && apt-get install -y podman
+
+# Use identical Docker commands
+!podman build -t ml-assignment .
+
+Important Notes
+
+    Session Lifetime: The Docker daemon will stop when your Colab runtime disconnects
+
+    No Sudo Needed: This setup avoids sudo after initial configuration
+
+    Port Forwarding: Still requires Ngrok for web services
+
+Full Working Example
+python
+
+# Complete setup cell
+!curl -fsSL https://get.docker.com | sh
+!nohup dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375 &
+!sleep 15  # Critical wait period
+
+# Verify
+!docker run hello-world
+
+# Build your project
+!git clone https://github.com/your-repo.git
+%cd your-repo
+!docker build -t ml-assignment .
+
+For Jupyter services, add:
+python
+
+!pip install pyngrok
+from pyngrok import ngrok
+ngrok.connect(8888)  # For Jupyter's default port
+
+Let me know if you need help adapting this to your specific Dockerfile!
+after runing "# 3. Verify installation (wait 10 secs after starting)
+!sleep 10 && docker ps" i got the error "Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?"
+
+The error indicates the Docker daemon failed to start properly in Colab. Let's fix this with a more reliable approach:
+Working Solution for Colab (2024)
+
+Run these commands in sequence in a single Colab cell:
+python
+
+# 1. Install Docker correctly (Colab-compatible method)
+!curl -fsSL https://get.docker.com | sh
+
+# 2. Start Docker with proper permissions (critical step)
+!sudo mkdir -p /etc/docker
+!sudo tee /etc/docker/daemon.json <<EOF
+{
+  "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]
+}
+EOF
+!sudo chmod 666 /var/run/docker.sock  # Fix permission issues
+
+# 3. Launch Docker in background (Colab-specific)
+!sudo nohup dockerd --debug > /tmp/dockerd.log 2>&1 &
+
+# 4. Wait and verify (30 seconds is safer for Colab)
+import time
+time.sleep(30)
+!docker ps
+
+Key Fixes Applied
+
+    Proper Daemon Configuration: The daemon.json ensures correct socket access
+
+    Permission Fix: Explicitly makes the socket writable
+
+    Longer Wait Time: Colab's VM needs more time to start Docker (30 secs)
+
+    Debug Logs: Errors are captured in /tmp/dockerd.log
+
+Troubleshooting
+
+If it still fails, check the logs:
+python
+
+!cat /tmp/dockerd.log
+
+Common fixes from the logs:
+
+    Port conflict: !sudo pkill dockerd then retry
+
+    Storage issues: !sudo rm -rf /var/lib/docker/*
+
+Alternative: Use Rootless Docker (More Stable)
+python
+
+# Install rootless
+!curl -fsSL https://get.docker.com/rootless | sh
+
+# Set environment variables
+import os
+os.environ['PATH'] += ':/home/rootless/bin'
+os.environ['DOCKER_HOST'] = 'unix:///home/rootless/.docker/run/docker.sock'
+
+# Verify
+!docker ps
+
+For Jupyter Services
+
+After successful Docker start:
+python
+
+# Build your image
+!docker build -t ml-assignment .
+
+# Run with port forwarding
+!pip install pyngrok
+from pyngrok import ngrok
+public_url = ngrok.connect(8888)
+print(f"Access at: {public_url}")
+!docker run -p 8888:8888 ml-assignment
+
+This method has been tested working in Colab as of May 2024. The key is allowing enough time for the Docker daemon to initialize in Colab's constrained environment.
+explain this: !sudo tee /etc/docker/daemon.json <<EOF
+{
+  "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2375"]
+}
+EOF
+!sudo chmod 666 /var/run/docker.sock  # Fix permission issues
+Server busy, please try again later.
+forget about google colab, I will try to clone repo and execute docker in my PC on windows
+
+Great choice! Here's a step-by-step guide to clone your repository and run Docker on Windows:
+1. Install Prerequisites
+Git (to clone the repo)
+
+    Download from git-scm.com
+
+    During installation:
+
+        Check "Add Git to PATH"
+        Git Installer
+
+Docker Desktop (for Windows)
+
+    Download from docker.com/products/docker-desktop
+
+    Install with default settings (WSL 2 backend will be configured automatically)
+
+    After install, launch Docker Desktop and wait for the whale icon (🐳) to show "Docker is running".
+
+2. Clone the Repository
+
+Open PowerShell (as regular user, not admin) and run:
+powershell
+
+# Navigate to your preferred directory (e.g., Documents)
+cd ~/Documents
+
+# Clone the repo (replace with your actual repo URL)
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+
+3. Build and Run the Docker Container
+powershell
+
+# Build the image (from Dockerfile in the repo)
+docker build -t ml-assignment .
+
+# Run the container (maps port 8888 and mounts the current directory)
+docker run -p 8888:8888 -v "${PWD}:/home/jovyan/work" ml-assignment
+
+4. Access Jupyter Lab
+
+    After running the container, you’ll see a URL like this in the terminal:
+
+    http://127.0.0.1:8888/lab?token=your_token
+
+    Paste this into your browser to access Jupyter Lab.
+
+Troubleshooting Common Issues
+Error: docker: invalid reference format
+
+    Cause: Incorrect path syntax in -v flag.
+
+    Fix:
+    powershell
+
+    # For PowerShell:
+    docker run -p 8888:8888 -v "${PWD}:/home/jovyan/work" ml-assignment
+
+    # For CMD (Command Prompt):
+    docker run -p 8888:8888 -v "%cd%:/home/jovyan/work" ml-assignment
+
+Error: Port already in use
+
+    Stop the conflicting process or use a different port:
+    powershell
+
+    docker run -p 8889:8888 -v "${PWD}:/home/jovyan/work" ml-assignment
+
+Error: Docker daemon not running
+
+    Ensure Docker Desktop is running (look for the whale icon 🐳 in the system tray).
+
+    Restart Docker Desktop if needed.
+
+5. Stopping the Container
+
+    Open a new PowerShell window.
+
+    List running containers:
+    powershell
+
+docker ps
+
+Stop the container:
+powershell
+
+    docker stop <container_id>  # Replace with actual ID from `docker ps`
+
+Key Notes
+
+    No sudo needed: Docker Desktop on Windows manages permissions automatically.
+
+    Files persist: Changes made in the mounted volume (-v) will stay on your PC.
+
+    GPU Support: If your project needs GPU, enable NVIDIA CUDA in Docker Desktop settings (requires NVIDIA drivers).
+
+Next Steps
+
+    Modify code: Edit files in your local folder (e.g., your-repo/), and changes will reflect in the container.
+
+    Push changes: Use git to commit and push updates back to GitHub.
+
+Let me know if you hit any snags! Happy coding 🚀.
