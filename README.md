@@ -1,4 +1,4 @@
-# Project Name
+# Softmax Implementation
 
 ## 🐳 Docker Setup
 
